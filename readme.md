@@ -67,9 +67,7 @@ Not set yet
     - Name the configuration (e.g., "Run/Debug").
     - Set `script` to `run.py`.
     - Ensure the Python interpreter is set to `.venv`.
-   
-    Example below:
-      ![img.png](img.png)
+    
 4. Run the application:
     - Select the newly created run configuration and click the Run button.
 
