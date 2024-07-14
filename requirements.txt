@@ -1,0 +1,7 @@
+pytz
+swisseph~=0.0.0.dev1
+fastapi~=0.111.0
+uvicorn~=0.30.1
+pydantic~=2.7.4
+pyswisseph
+requests
