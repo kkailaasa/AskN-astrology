@@ -81,7 +81,7 @@ gregorian_to_jd = lambda date: swe.julday(
     date.month,
     date.day,
     # 0.0
-    round((date.hour + date.minute / 60.0 + date.second / 3600.0), 2)
+    round((date.hour + date.minute / 60.0 + date.second / 3600.0), 2),
 )
 
 jd_to_gregorian = lambda jd: swe.revjul(

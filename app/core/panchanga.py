@@ -5,6 +5,7 @@ from time import strptime
 
 import pytz
 import datetime
+
 # from panchanga_util import *
 import difflib
 from app.core.panchanga_util import *
@@ -15,7 +16,7 @@ from app.core.astrology_api import AstrologyApi
 
 # Define the path to the static folder
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATIC_DIR = os.path.join(BASE_DIR, "static")
 
 format_time = lambda t: "%02d:%02d:%02d" % (t[0], t[1], t[2])
 
@@ -31,7 +32,7 @@ class Panchanga:
         self.set_lat_long_index()
         fp.close()
         path = os.path.join(STATIC_DIR, "sanskrit_names.json")
-        fp = open(path, encoding='utf-8')
+        fp = open(path, encoding="utf-8")
         sktnames = json.load(fp)
         fp.close()
 
@@ -55,9 +56,12 @@ class Panchanga:
         key = (lat, long)
         return self.lat_long_index.get(key, [])
 
-    async def calculate_panchanga_geo(self, latitude: float, longitude: float, time_zone: str, lookup_date):
+    async def calculate_panchanga_geo(
+        self, latitude: float, longitude: float, time_zone: str, lookup_date: str
+    ):
         tzone = pytz.timezone(time_zone)
-        tz_offset = compute_timezone_offset(lookup_date, tzone)
+        lookup_date_input = parse_date(lookup_date)
+        tz_offset = compute_timezone_offset(lookup_date_input, tzone)
         place = Place(latitude, longitude, tz_offset)
         return await self.__calculate_panchanga(place, lookup_date)
 
@@ -75,21 +79,35 @@ class Panchanga:
         if place:
             astro = AstrologyApi()
             resp = await astro.get_panchanga(place, lookup_date_input)
+            # Add Vara
             resp["vara"] = await self.__get_vara(lookup_date_input)
+            # Add user input to response
+            resp["geo_location"] = {
+                "city": lookup_city,
+                "latitude": place[0],
+                "longitude": place[1],
+                "timezone": str(tzone),
+            }
             return resp
             # return await self.__calculate_panchanga(place, lookup_date, tzone)
 
     async def __get_vara(self, lookup_date: datetime):
-        lookup_without_time = datetime(lookup_date.year, lookup_date.month, lookup_date.day)
+        lookup_without_time = datetime(
+            lookup_date.year, lookup_date.month, lookup_date.day
+        )
         jd_without_time = gregorian_to_jd(lookup_without_time)
         vara = vaara(jd_without_time)
         return self.vaaras[str(vara)]
 
-    async def __calculate_panchanga(self, place: tuple, lookup_date: str, tzone: pytz.timezone):
+    async def __calculate_panchanga(
+        self, place: tuple, lookup_date: str, tzone: pytz.timezone
+    ):
         # tt = {"date": lookup_date.date}
         # lookup_date_no_time = DateTimeRequest(**tt)
         lookup_date_input = parse_date(lookup_date)
-        lookup_without_time = datetime(lookup_date_input.year, lookup_date_input.month, lookup_date_input.day)
+        lookup_without_time = datetime(
+            lookup_date_input.year, lookup_date_input.month, lookup_date_input.day
+        )
         jd_without_time = gregorian_to_jd(lookup_without_time)
 
         lookup_date_utc = adjust_lookup_dt_to_utc(lookup_date_input, tzone)
@@ -101,8 +119,8 @@ class Panchanga:
         if place:
             srise = sunrise(jd_without_time, place)[1]
             sset = sunset(jd_without_time, place)[1]
-            ti = tithi(jd_with_time, place, jd_without_time) # not go with the sun
-            nak = nakshatra(jd_with_time, place, jd_without_time) # not go with the sun
+            ti = tithi(jd_with_time, place, jd_without_time)  # not go with the sun
+            nak = nakshatra(jd_with_time, place, jd_without_time)  # not go with the sun
             yog = yoga(jd_with_time, place, jd_without_time)
             mas = masa(jd_without_time, place)
             rtu = ritu(mas[0])
@@ -154,7 +172,7 @@ class Panchanga:
                 "samvatsara": p_samvatsara,
                 "sunrise": p_sunrise,
                 "sunset": p_sunset,
-                "day_duration": p_day_duration
+                "day_duration": p_day_duration,
             }
 
             panchangam = PanchangamResponse(**data)
@@ -178,10 +196,10 @@ class Panchanga:
             for m in nearest:
                 all_matches += m + "\n"
             msg = (
-                    city
-                    + " not found!\n\n"
-                    + "Did you mean any of these?\n\n"
-                    + all_matches
+                city
+                + " not found!\n\n"
+                + "Did you mean any of these?\n\n"
+                + all_matches
             )
             print(msg)
             return None

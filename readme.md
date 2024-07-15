@@ -94,17 +94,12 @@ Once the server is running, you can access the API documentation provided by Fas
 
 ```sh
 curl -X 'POST' \
-  'http://127.0.0.1:8000/panchanga_by_city/' \
+  'http://localhost:8000/navamsa_chart_by_city/' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
- "city": "agra",
-  "lookup_date": {
-    "date": "27/09/1982",
-    "hour": "00",
-    "minute": "00",
-    "second": "00"
-  }
+  "city": "delhi",
+  "lookup_date": "12/07/2024 14:00:00"
 }'
 ```
 
@@ -128,30 +123,59 @@ curl -X 'POST' \
   "latitude": 27.18333,
   "longitude": 78.01667,
   "timezone": "Asia/Kolkata",
-  "lookup_date": "27/09/1983"
+  "lookup_date": "12/07/2024 14:00:00"
 }'
 ```
 
-### Sample Response
+### Sample Panchangam Response
 
 ```
 {
-  "tithi": "Kṛṣṇa pakṣa pañcamī",
-  "tithi_time": "15:45:39",
-  "nakshatra": "Kṛttikā",
-  "nakshatra_time": "15:33:51",
-  "yoga": "Pūrṇimā",
-  "yoga_time": "15:23:41",
-  "karana": "Taitila",
-  "vaara": "Maṅgalavāra",
-  "rtu": "Varṣā",
-  "masa": "Bhādrapada",
-  "kali_day": 1857139,
-  "salivahana_saka": 1905,
-  "gatakali": 5084,
-  "samvatsara": "Rudhirodgārī",
-  "sunrise": "06:09:13",
-  "sunset": "18:08:40",
-  "day_duration": "11:59:27"
+  "nakshatra-durations": {
+    "number": 12,
+    "name": "Uttara Phalguni(Uttara)",
+    "starts_at": "2024-07-11 13:03:44",
+    "ends_at": "2024-07-12 16:08:17",
+    "remaining_percentage_at_given_time": 7.88215107349896
+  },
+  "tithi-durations": {
+    "number": 7,
+    "name": "Saptami",
+    "paksha": "shukla",
+    "completes_at": "2024-07-13 15:06:04",
+    "left_precentage": 94.56
+  },
+  "yoga-durations": {
+    "1": {
+      "number": 19,
+      "name": "Parigha",
+      "completion": "2024-07-13 05:13:24",
+      "yoga_left_percentage": 60.656713814751484
+    },
+    "2": {
+      "number": 20,
+      "name": "Shiva",
+      "completion": "2024-07-14 06:14:10"
+    }
+  },
+  "karana-durations": {
+    "1": {
+      "number": 13,
+      "name": "Garija",
+      "karana_left_percentage": 89.12797407165928,
+      "completion": "2024-07-13 01:50:16"
+    },
+    "2": {
+      "number": 14,
+      "name": "Vanija",
+      "completion": "2024-07-13 15:06:07"
+    },
+    "3": {
+      "number": 15,
+      "name": "Vishti",
+      "completion": "2024-07-14 04:18:52"
+    }
+  },
+  "vara": "Śukravāra"
 }
 ```

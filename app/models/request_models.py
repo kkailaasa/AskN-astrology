@@ -10,12 +10,12 @@ class DateTimeRequest(BaseModel):
     minute: str = "00"
     second: str = "00"
 
-    @validator('date')
+    @validator("date")
     def validate_date(self, v):
         try:
-            datetime.strptime(v, '%d/%m/%Y')
+            datetime.strptime(v, "%d/%m/%Y")
         except ValueError:
-            raise ValueError('Date must be in DD/MM/YYYY format')
+            raise ValueError("Date must be in DD/MM/YYYY format")
         return v
 
 
@@ -23,12 +23,12 @@ class CityRequest(BaseModel):
     city: str
     lookup_date: str
 
-    @validator('date')
+    @validator("date")
     def validate_date(self, v):
         try:
             datetime.strptime(v, "%d/%m/%Y %H:%M:%S")
         except ValueError:
-            raise ValueError('Date must be in DD/MM/YYYY HH:MM:SS format')
+            raise ValueError("Date must be in DD/MM/YYYY HH:MM:SS format")
         return v
 
 
@@ -36,11 +36,10 @@ class LocationRequest(BaseModel):
     latitude: confloat(ge=-90, le=90)
     longitude: confloat(ge=-180, le=180)
     timezone: str
-    lookup_date: DateTimeRequest
+    lookup_date: str
 
-    @validator('timezone')
+    @validator("timezone")
     def validate_timezone(self, v):
         if v not in pytz.all_timezones:
-            raise ValueError('Invalid timezone')
+            raise ValueError("Invalid timezone")
         return v
-

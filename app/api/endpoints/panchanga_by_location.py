@@ -13,6 +13,7 @@ async def get_panchanga_by_location(location_request: LocationRequest):
     longitude = location_request.longitude
     tzone = location_request.timezone
     lookup_date = location_request.lookup_date
-    resp = await panchanga.calculate_panchanga_geo(latitude, longitude, tzone, lookup_date)
+    resp = await panchanga.calculate_panchanga_geo(
+        latitude, longitude, tzone, lookup_date
+    )
     return resp
-

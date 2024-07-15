@@ -12,4 +12,3 @@ async def get_panchanga_by_city(city_request: CityRequest):
     lookup_date = city_request.lookup_date
     resp = await panchanga.calculate_panchanga_city(city, lookup_date)
     return resp
-

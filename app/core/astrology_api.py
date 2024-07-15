@@ -17,16 +17,16 @@ headers = {
 
 
 def create_payload(
-        year: int,
-        month: int,
-        day: int,
-        hours: int,
-        minutes: int,
-        seconds: int,
-        latitude: float,
-        longitude: float,
-        timezone: float,
-        observation_point: str = "geocentric",
+    year: int,
+    month: int,
+    day: int,
+    hours: int,
+    minutes: int,
+    seconds: int,
+    latitude: float,
+    longitude: float,
+    timezone: float,
+    observation_point: str = "geocentric",
 ):
     payload = {
         "year": year,
@@ -65,12 +65,12 @@ class AstrologyApi:
             resp = await self.__call_panchang_api(place, lookup_date, api)
             combined_results.update(resp)
 
-        # tasks = [self.call_panchang_api(place, lookup_date, param) for param in params]
-
-        # Run all tasks concurrently and wait for them to complete
+        # tasks = [self.__call_panchang_api(place, lookup_date, param) for param in params]
+        #
+        # # Run all tasks concurrently and wait for them to complete
         # results = await asyncio.gather(*tasks)
-
-        # Combine results into a single dictionary
+        #
+        # # Combine results into a single dictionary
         # for result in results:
         #     if result:
         #         combined_results.update(result)
@@ -83,7 +83,9 @@ class AstrologyApi:
         resp = await self.__call_panchang_api(place, lookup_date, "navamsa-chart-info")
         return resp
 
-    async def __call_panchang_api(self, place: tuple, lookup_date: datetime, api: str) -> dict:
+    async def __call_panchang_api(
+        self, place: tuple, lookup_date: datetime, api: str
+    ) -> dict:
         await asyncio.sleep(0.5)
         lat, lon, tz = place
         payload = json.dumps(
@@ -111,4 +113,4 @@ class AstrologyApi:
             print(result)
             return result
         else:
-            return None
+            return {api: {}}

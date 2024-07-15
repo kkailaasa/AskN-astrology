@@ -19,4 +19,3 @@ class PanchangamResponse(BaseModel):
     sunrise: str
     sunset: str
     day_duration: str
-
