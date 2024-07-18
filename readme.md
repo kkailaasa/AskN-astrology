@@ -1,6 +1,16 @@
-# Panchanga Calculation API
+# Panchanga and Navamsa Calculation API
 
-This FastAPI project provides endpoints to calculate Panchanga details for a specific date based on city name, or geographic coordinates and time zone. 
+This FastAPI project provides endpoints to calculate Panchanga and Navamsa details for a specific date based on city name, or geographic coordinates and time zone.
+
+This version uses [Free Astrology API](https://freeastrologyapi.com) to get panchanga for a given location and date time except vaar.
+
+This implementation also contains elements of [Drik Panchanga](https://github.com/webresh/drik-panchanga) calculation which works 
+correctly for calculating vaara. We are also using the logic to get lat, lng and tz attributes for a given city using city.json 
+from the same implementation. Those value are then passed to Astrology API to calculate Tithi, Nakshatra, Karna and Yoga.
+
+This project also contains Dify DSL to calculate Panchanga and Navamsa Chart.
+
+
 
 ## Setup
 
@@ -14,10 +24,8 @@ This FastAPI project provides endpoints to calculate Panchanga details for a spe
 
 1. Clone the repository:
 
-Not set yet
-
     ```sh
-    git clone <repository_url>
+    git clone https://github.com/kkailaasa/AskN-astrology.git
     cd <repository_directory>
     ```
 
@@ -43,8 +51,11 @@ Not set yet
     ```sh
     source .venv/bin/activate  # On Windows use `.venv\Scripts\activate`
     ```
-2. Default Application port is 8000. Set environment variable `APP_PORT` to change it.
-
+2. Setup environment variables
+   1. Default Application port is 8000. Set environment variable `APP_PORT` to change it.
+   2. Setup Panchang API specific environment variables 
+      1. ASTROLOGY_API_URL_BASE=https://json.apiastro.com
+      2. ASTROLOGY_API_KEY (New key can be obtained from https://freeastrologyapi.com/signup.php)
 
 3. Run the application using `uvicorn` already setup in run.py:
 
@@ -177,5 +188,93 @@ curl -X 'POST' \
     }
   },
   "vara": "Śukravāra"
+}
+```
+
+### Navamsa Chart by City
+
+### Example
+
+```sh
+curl -X 'POST' \
+  'http://127.0.0.1:8000/navamsa_chart_by_city/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "city": "Delhi",
+  "lookup_date": "1/1/2005 14:30:00"
+}'
+```
+
+### Sample Navamsa Response
+```sh
+{
+  "navamsa-chart-info": {
+    "0": {
+      "name": "Ascendant",
+      "isRetro": "false",
+      "current_sign": 10
+    },
+    "1": {
+      "name": "Sun",
+      "isRetro": "false",
+      "current_sign": 6
+    },
+    "2": {
+      "name": "Moon",
+      "isRetro": "false",
+      "current_sign": 6
+    },
+    "3": {
+      "name": "Mars",
+      "isRetro": "false",
+      "current_sign": 7
+    },
+    "4": {
+      "name": "Mercury",
+      "isRetro": "false",
+      "current_sign": 11
+    },
+    "5": {
+      "name": "Jupiter",
+      "isRetro": "false",
+      "current_sign": 5
+    },
+    "6": {
+      "name": "Venus",
+      "isRetro": "false",
+      "current_sign": 11
+    },
+    "7": {
+      "name": "Saturn",
+      "isRetro": "true",
+      "current_sign": 4
+    },
+    "8": {
+      "name": "Rahu",
+      "isRetro": "true",
+      "current_sign": 2
+    },
+    "9": {
+      "name": "Ketu",
+      "isRetro": "true",
+      "current_sign": 8
+    },
+    "10": {
+      "name": "Uranus",
+      "isRetro": "false",
+      "current_sign": 10
+    },
+    "11": {
+      "name": "Neptune",
+      "isRetro": "false",
+      "current_sign": 3
+    },
+    "12": {
+      "name": "Pluto",
+      "isRetro": "false",
+      "current_sign": 12
+    }
+  }
 }
 ```

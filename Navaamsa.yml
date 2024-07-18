@@ -1,0 +1,243 @@
+app:
+  description: ''
+  icon: "\U0001F916"
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: Navaamsa
+kind: app
+version: 0.1.0
+workflow:
+  features:
+    file_upload:
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+    opening_statement: ''
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: llm
+      id: 1720814642560-source-1721244877213-target
+      source: '1720814642560'
+      sourceHandle: source
+      target: '1721244877213'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: llm
+        targetType: http-request
+      id: 1721244877213-source-1721243405890-target
+      source: '1721244877213'
+      sourceHandle: source
+      target: '1721243405890'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: http-request
+        targetType: llm
+      id: 1721243405890-source-1721245741833-target
+      source: '1721243405890'
+      sourceHandle: source
+      target: '1721245741833'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: llm
+        targetType: answer
+      id: 1721245741833-source-1721244316619-target
+      source: '1721245741833'
+      sourceHandle: source
+      target: '1721244316619'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Start
+        type: start
+        variables: []
+      height: 54
+      id: '1720814642560'
+      position:
+        x: 30
+        y: 277
+      positionAbsolute:
+        x: 30
+        y: 277
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: '{{#1721244877213.text#}}'
+          type: json
+        desc: Get Panchamgam for the time and location (City) entered by the user
+        headers: 'Content-Type:application/json
+
+          accept:application/json'
+        method: post
+        params: ''
+        selected: false
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: HTTP Request
+        type: http-request
+        url: https://astro.koogle.sk/navamsa_chart_by_city/
+        variables: []
+      height: 154
+      id: '1721243405890'
+      position:
+        x: 638
+        y: 277
+      positionAbsolute:
+        x: 638
+        y: 277
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1721245741833.text#}}'
+        desc: ''
+        selected: false
+        title: Answer
+        type: answer
+        variables: []
+      height: 107
+      id: '1721244316619'
+      position:
+        x: 1246
+        y: 277
+      positionAbsolute:
+        x: 1246
+        y: 277
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - sys
+          - query
+        desc: ''
+        model:
+          completion_params:
+            frequency_penalty: 0.5
+            presence_penalty: 0.5
+            temperature: 0.1
+            top_p: 0.75
+          mode: chat
+          name: gpt-3.5-turbo
+          provider: openai
+        prompt_template:
+        - edition_type: basic
+          id: c0779b4c-1c8f-440c-9688-5335d8230f2b
+          role: system
+          text: "{{#context#}}\nCollect city name and time in format DD/MM/YYYY HH:MM:SS.\n\
+            Use the input to create a json payload for a http call in below format:\n\
+            {\n  \"city\": \"CITY NAME\",\n  \"lookup_date\": \"DATE AND TIME\"\n\
+            }\n"
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 98
+      id: '1721244877213'
+      position:
+        x: 334
+        y: 277
+      positionAbsolute:
+        x: 334
+        y: 277
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1721243405890'
+          - body
+        desc: ''
+        model:
+          completion_params:
+            frequency_penalty: 0.5
+            presence_penalty: 0.5
+            temperature: 0.1
+            top_p: 0.75
+          mode: chat
+          name: gpt-3.5-turbo
+          provider: openai
+        prompt_template:
+        - id: a9c592c7-e071-453d-ba1d-53857d281945
+          role: system
+          text: '{{#context#}}
+
+            You will be provided with json in the context. Process that to give user
+            the hindu Navamsa chart planet details in the  in the json.
+
+            Interpret the current_sign field according to Hindu sign and chart system '
+        selected: false
+        title: LLM 2
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 98
+      id: '1721245741833'
+      position:
+        x: 942
+        y: 277
+      positionAbsolute:
+        x: 942
+        y: 277
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -518.8072171418403
+      y: 159.44698604941487
+      zoom: 0.6874977166843739

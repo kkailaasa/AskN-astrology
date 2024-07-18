@@ -86,8 +86,13 @@ class AstrologyApi:
     async def __call_panchang_api(
         self, place: tuple, lookup_date: datetime, api: str
     ) -> dict:
-        await asyncio.sleep(0.5)
         lat, lon, tz = place
+
+        if "navamsa" in api:
+            observation_point = 'topocentric'
+        else:
+            observation_point = 'geocentric'
+
         payload = json.dumps(
             create_payload(
                 lookup_date.year,
@@ -99,6 +104,7 @@ class AstrologyApi:
                 lat,
                 lon,
                 tz,
+                observation_point
             )
         )
         url = urljoin(self.__api_base_url, api)
@@ -109,7 +115,6 @@ class AstrologyApi:
                 result = {api: json.loads(resp_text["output"])}
             else:
                 result = {api: resp_text["output"]}
-            # thithi_result = resp_text["output"]
             print(result)
             return result
         else:
