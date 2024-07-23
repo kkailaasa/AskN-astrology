@@ -44,6 +44,22 @@ This project also contains Dify DSL to calculate Panchanga and Navamsa Chart.
 
 ### Running the Application
 
+#### From Container
+
+Docker Compose: 
+1. Add API key value to [docker-compose.yml](docker-compose.yml).
+2. Navigate to nu_astrology_api and to execute `docker compose up`.
+
+Dockerfile:
+1. Add below mentioned api environment variables to docker file before line #15
+2. Build docker image `docker build -t astro_api:latest .`
+3. `docker run -e APP_PORT=8000 -p 8000:8000 astro_api:latest  `
+
+   ```sh
+   ENV ASTROLOGY_API_KEY=<REPLACE WITH API KEY>
+   ENV ASTROLOGY_API_URL_BASE=https://json.apiastro.com
+   ```
+
 #### From Command Line
 
 1. Ensure the virtual environment is activated:

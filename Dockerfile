@@ -11,6 +11,7 @@ COPY . /api/
 
 RUN  pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
+
 EXPOSE $APP_PORT
 
 # Command to run the application
