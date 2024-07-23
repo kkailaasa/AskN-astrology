@@ -1,0 +1,14 @@
+name: astrology_api
+
+services:
+  astro_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python run.py
+    environment:
+      - ASTROLOGY_API_KEY=<REPLACE WITH API KEY>
+      - ASTROLOGY_API_URL_BASE=https://json.apiastro.com
+      - APP_PORT=8000
+    ports:
+      - 8000:8000
