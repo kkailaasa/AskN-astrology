@@ -80,7 +80,12 @@ class Panchanga:
             astro = AstrologyApi()
             resp = await astro.get_panchanga(place, lookup_date_input)
             # Add Vara
-            resp["vara"] = await self.__get_vara(lookup_date_input)
+            vara_masa_samvat = await self.__get_vara_masa_samvat(lookup_date_input, place)
+            resp["vara"] = vara_masa_samvat[0]
+            resp["masa"] = vara_masa_samvat[1]
+            resp["samvat"] = vara_masa_samvat[2]
+            resp["rtu"] = vara_masa_samvat[3]
+            resp["ayana"] = determine_solstice(lookup_date_input)
             # Add user input to response
             resp["geo_location"] = {
                 "city": lookup_city,
@@ -89,15 +94,27 @@ class Panchanga:
                 "timezone": str(tzone),
             }
             return resp
-            # return await self.__calculate_panchanga(place, lookup_date, tzone)
 
-    async def __get_vara(self, lookup_date: datetime):
+    async def __get_vara_masa_samvat(self, lookup_date: datetime, place: tuple) -> tuple:
         lookup_without_time = datetime(
             lookup_date.year, lookup_date.month, lookup_date.day
         )
         jd_without_time = gregorian_to_jd(lookup_without_time)
         vara = vaara(jd_without_time)
-        return self.vaaras[str(vara)]
+        mas = masa(jd_without_time, place)
+        samvat = samvatsara(jd_without_time, mas[0])
+        rtu = ritu(mas[0])
+        month_name = self.masas[str(mas[0])]
+        is_leap = mas[1]
+        if is_leap:
+            month_name = "Adhika " + month_name.lower()
+        p_vara = self.vaaras[str(vara)]
+        p_masa = month_name
+        p_samvatsara = self.samvats[str(samvat)]
+        p_rtu = self.ritus[str(rtu)]
+        vara_masa_samvat = (p_vara, p_masa, p_samvatsara, p_rtu)
+        return vara_masa_samvat
+
 
     async def __calculate_panchanga(
         self, place: tuple, lookup_date: str, tzone: pytz.timezone
@@ -252,3 +269,26 @@ def adjust_lookup_dt_to_utc(local_datetime: datetime, time_zone: pytz.timezone):
 
     print(f"User input converted to UTC {dt_utc}")
     return dt_utc
+
+
+def determine_solstice(lookup_date):
+    """
+    Determine whether the given date falls within Uttarayana or Dakshinayana.
+
+    Args:
+    date (datetime): The date to check.
+
+    Returns:
+    str: "Uttarayana" if the date is within Uttarayana, "Dakshinayana" if the date is within Dakshinayana.
+    """
+    year = lookup_date.year
+
+    # Define the start and end dates for Uttarayana and Dakshinayana for the given year
+    uttarayana_start = datetime(year, 1, 14)
+    uttarayana_end = datetime(year, 7, 14)
+
+    # Determine the solstice period for the given date
+    if uttarayana_start <= lookup_date < uttarayana_end:
+        return "Uttarayana"
+    else:
+        return "Dakshinayana"
